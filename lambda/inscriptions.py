@@ -5,11 +5,30 @@ field_mapping = {
     "mls_no": "uls_number",
     "price_buy": "asking_price",
     "price_rent": "asking_price_condo",
-    "postal_code": "area_code",
-    "occupation_date": "occupation",
+    "municipality_code": "city_id",
+    "street_name": "street_name",
+    "postal_code": "postal_code",
+    "year_constructed": "year_built",
+    "liveable_area": "living_space_area",
+    "facade_batiment": "facade_terrain",
+    "profondeur_batiment": "profondeur_terrain",
+    "superficie_terrain": "superficie_terrain",
+    "annee_evaluation": "tax_year",
+    "evaluation_municipale_terrain": "assessment_municipal_land",
+    "evaluation_municipale_batiment": "assessment_municipal_building",
     "total_number_of_rooms": "rooms",
-    "property_type": "unit_type",
-    "year_constructed": "year_built"
+    "bedrooms": "bedrooms",
+    "bathrooms": "bathrooms",
+    "powder_rooms": "bathrooms_half",
+    "waterfront": "waterfront",
+    "date_added": "date_added",
+    "status": "status",
+    "latitude": "latitude",
+    "longitude": "longitude",
+    "remarks": "description_en",
+    "parking_interior": "parking",
+    "parking_exterior": "parking_spaces",
+    "full_address": "street_number",
 }
 
 
@@ -17,6 +36,7 @@ def lambda_handler(event, response):
     session = requests.Session()
     body = json.loads(event["body"])
     url = body["url"]
+    # url = event["url"]
 
     headers = {
         'authority': 'joellebitar.com',
@@ -44,6 +64,15 @@ def lambda_handler(event, response):
         details = json.loads(data.text)
         property_details = details.get('results', [])[0].get('property', {})
         mapped_data = {field_mapping.get(key, key): value for key, value in property_details.items()}
+        # print((mapped_data["property_type"]), 'mapped_data')
+        # print(len(property_details), 'property_details')
+        # print(len(property_details), 'property_details')
+        # json_students_data = json.dumps(mapped_data, indent=2)
+        # with open('duplicate.json', 'w') as json_file:
+        #     json_file.write(json_students_data)
+        # json_students_datas = json.dumps(property_details, indent=2)
+        # with open('pro.json', 'w') as json_file:
+        #     json_file.write(json_students_datas)
 
         return {
             'statusCode': 200,
@@ -52,3 +81,6 @@ def lambda_handler(event, response):
             },
             'body': format(mapped_data)
         }
+
+# if __name__ == '__main__':
+#     lambda_handler({'url': "https://joellebitar.com/inscriptions/3110+Rue+Denis-Diderot/16671841/"}, None)
