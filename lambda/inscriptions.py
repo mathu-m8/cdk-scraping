@@ -27,16 +27,20 @@ field_mapping = {
     "remarks": "description_en",
     "parking_interior": "parking",
     "parking_exterior": "parking_spaces",
-    "full_address": "street_number",
-    'total_number_of_rooms': 'total_number_of_rooms',
+    'total_number_of_rooms': 'rooms',
+    "property_type": "unit_type",
+    "region_code": "region_id",
+    "virtual_visit_url": "video_url_en",
+    "full_address": "address_newdev_salesoffices",
+    "annee_evaluation": "assessment_municipal_year",
+    "year_constructed": "year_built_condo"
 }
 
 
 def lambda_handler(event, response):
     session = requests.Session()
-    # body = json.loads(event["body"])
-    # url = body["url"]
-    url = event["url"]
+    body = json.loads(event["body"])
+    url = body["url"]
 
     headers = {
         'authority': 'joellebitar.com',
@@ -63,16 +67,9 @@ def lambda_handler(event, response):
     if data.status_code == 200:
         details = json.loads(data.text)
         property_details = details.get('results', [])[0].get('property', {})
+        if property_details["full_address"]:
+            property_details["street_number"] = property_details["full_address"].split(' ')[0]
         mapped_data = {field_mapping.get(key, key): value for key, value in property_details.items()}
-        print((mapped_data["property_type"]), 'mapped_data')
-        print(len(property_details), 'property_details')
-        print(len(property_details), 'property_details')
-        json_students_data = json.dumps(mapped_data, indent=2)
-        with open('duplicate.json', 'w') as json_file:
-            json_file.write(json_students_data)
-        json_students_datas = json.dumps(property_details, indent=2)
-        with open('pro.json', 'w') as json_file:
-            json_file.write(json_students_datas)
 
         return {
             'statusCode': 200,
@@ -81,7 +78,3 @@ def lambda_handler(event, response):
             },
             'body': format(mapped_data)
         }
-
-
-if __name__ == '__main__':
-    lambda_handler({'url': "https://joellebitar.com/inscriptions/5743+Rue+D%27Iberville/11901382/"}, None)

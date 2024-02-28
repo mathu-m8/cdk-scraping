@@ -33,10 +33,9 @@ field_mapping = {
 
 
 def lambda_handler(event, response):
-    # body = json.loads(event["body"])
     try:
-        url = event["url"]
-        # url = body["url"]
+        body = json.loads(event["body"])
+        url = body["url"]
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
         table = soup.select('table')
@@ -80,13 +79,6 @@ def lambda_handler(event, response):
                 data[key] = value
 
         mapped_data = {field_mapping.get(key, key): value for key, value in data.items()}
-        print(len(data))
-        json_students_data = json.dumps(data, indent=2)
-        with open('duplicate.json', 'w') as json_file:
-            json_file.write(json_students_data)
-        mapped_data_jon = json.dumps(mapped_data, indent=2)
-        with open('map.json', 'w') as json_file:
-            json_file.write(mapped_data_jon)
 
         return {
             'statusCode': 200,
@@ -106,10 +98,3 @@ def lambda_handler(event, response):
             'statusCode': 500,
             'body': f'An error occurred: {str(e)}'
         }
-
-
-if __name__ == '__main__':
-    lambda_handler(
-        {
-            "url": "https://groupelavoie.com/en/houses-for-sale/commercial-building-office-503-boul-de-melocheville-j6n0e2-beauharnois-21084302/"},
-        None)
