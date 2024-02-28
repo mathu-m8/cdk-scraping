@@ -16,7 +16,6 @@ field_mapping = {
     "annee_evaluation": "tax_year",
     "evaluation_municipale_terrain": "assessment_municipal_land",
     "evaluation_municipale_batiment": "assessment_municipal_building",
-    "total_number_of_rooms": "rooms",
     "bedrooms": "bedrooms",
     "bathrooms": "bathrooms",
     "powder_rooms": "bathrooms_half",
@@ -29,6 +28,7 @@ field_mapping = {
     "parking_interior": "parking",
     "parking_exterior": "parking_spaces",
     "full_address": "street_number",
+    'total_number_of_rooms': 'total_number_of_rooms',
 }
 
 
@@ -82,5 +82,6 @@ def lambda_handler(event, response):
             'body': format(mapped_data)
         }
 
+
 if __name__ == '__main__':
-    lambda_handler({'url': "https://joellebitar.com/inscriptions/3110+Rue+Denis-Diderot/16671841/"}, None)
+    lambda_handler({'url': "https://joellebitar.com/inscriptions/5743+Rue+D%27Iberville/11901382/"}, None)
