@@ -34,9 +34,9 @@ field_mapping = {
 
 def lambda_handler(event, response):
     session = requests.Session()
-    body = json.loads(event["body"])
-    url = body["url"]
-    # url = event["url"]
+    # body = json.loads(event["body"])
+    # url = body["url"]
+    url = event["url"]
 
     headers = {
         'authority': 'joellebitar.com',
@@ -64,15 +64,15 @@ def lambda_handler(event, response):
         details = json.loads(data.text)
         property_details = details.get('results', [])[0].get('property', {})
         mapped_data = {field_mapping.get(key, key): value for key, value in property_details.items()}
-        # print((mapped_data["property_type"]), 'mapped_data')
-        # print(len(property_details), 'property_details')
-        # print(len(property_details), 'property_details')
-        # json_students_data = json.dumps(mapped_data, indent=2)
-        # with open('duplicate.json', 'w') as json_file:
-        #     json_file.write(json_students_data)
-        # json_students_datas = json.dumps(property_details, indent=2)
-        # with open('pro.json', 'w') as json_file:
-        #     json_file.write(json_students_datas)
+        print((mapped_data["property_type"]), 'mapped_data')
+        print(len(property_details), 'property_details')
+        print(len(property_details), 'property_details')
+        json_students_data = json.dumps(mapped_data, indent=2)
+        with open('duplicate.json', 'w') as json_file:
+            json_file.write(json_students_data)
+        json_students_datas = json.dumps(property_details, indent=2)
+        with open('pro.json', 'w') as json_file:
+            json_file.write(json_students_datas)
 
         return {
             'statusCode': 200,
@@ -82,5 +82,5 @@ def lambda_handler(event, response):
             'body': format(mapped_data)
         }
 
-# if __name__ == '__main__':
-#     lambda_handler({'url': "https://joellebitar.com/inscriptions/3110+Rue+Denis-Diderot/16671841/"}, None)
+if __name__ == '__main__':
+    lambda_handler({'url': "https://joellebitar.com/inscriptions/3110+Rue+Denis-Diderot/16671841/"}, None)
