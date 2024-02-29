@@ -1,5 +1,5 @@
 from aws_cdk import (
-    Stack,
+    Stack, Duration,
 )
 from constructs import Construct
 
@@ -30,10 +30,16 @@ class CdkScrapingStack(Stack):
 
         api = apigateway.RestApi(self, "scraping-api",
                                  rest_api_name="Scraping Data",
-                                 description="Scraping details")
+                                 description="Scraping details",
+                                 )
 
         get_widgets_integration = apigateway.LambdaIntegration(scraping_function,
                                                                request_templates={
                                                                    "application/json": '{ "statusCode": "200" }'})
-
+        api.root.add_cors_preflight(
+            allow_origins=["*"],
+            allow_methods=["POST"],
+            allow_headers=["Content-Type"],
+            max_age=Duration.seconds(3600)
+        )
         api.root.add_method("POST", get_widgets_integration)

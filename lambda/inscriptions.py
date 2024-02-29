@@ -34,15 +34,12 @@ field_mapping = {
     "virtual_visit_url": "video_url_en",
     "full_address": "address_newdev_salesoffices",
     "annee_evaluation": "assessment_municipal_year",
-    "year_constructed": "year_built_condo"
+    "year_constructed": "year_built_condo",
 }
 
 
 def getJoellebitarDetails(url):
     session = requests.Session()
-    # body = json.loads(event["body"])
-    # url = body["url"]
-
     headers = {
         'authority': 'joellebitar.com',
         'accept': '*/*',
@@ -74,7 +71,8 @@ def getJoellebitarDetails(url):
         return {
             'statusCode': 200,
             'headers': {
-                'Content-Type': 'text/plain'
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
             },
-            'body': json.dumps(mapped_data)
+            'body': json.dumps(mapped_data),
         }

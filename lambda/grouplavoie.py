@@ -34,15 +34,14 @@ field_mapping = {
 
 def getGroupelavoieDetails(url):
     try:
-        # body = json.loads(event["body"])
-        # url = body["url"]
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
         table = soup.select('table')
         data = {}
         bathroom_element = soup.find('i', class_='c-property-details-bar__bathrooms')
         bedroom_element = soup.find('i', class_='c-property-details-bar__bedrooms')
-        data["description_en"] = soup.select_one(".l-article__content--with-border").find('p').text
+        if soup.select_one(".l-article__content--with-border").find('p'):
+            data["description_en"] = soup.select_one(".l-article__content--with-border").find('p').text
         address = soup.select_one('.c-property-details-bar__name').text.strip()
         data["address_newdev_salesoffices"] = ' '.join(address.split())
         data["asking_price"] = soup.select_one('.c-property-details-bar__price').text.strip()
@@ -79,14 +78,15 @@ def getGroupelavoieDetails(url):
                 data[key] = value
 
         mapped_data = {field_mapping.get(key, key): value for key, value in data.items()}
+
         return {
             'statusCode': 200,
             'headers': {
-                'Content-Type': 'text/plain'
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
             },
-            'body': json.dumps(mapped_data)
+            'body': json.dumps(mapped_data),
         }
-
     except requests.RequestException as e:
         return {
             'statusCode': 500,
@@ -97,3 +97,8 @@ def getGroupelavoieDetails(url):
             'statusCode': 500,
             'body': f'An error occurred: {str(e)}'
         }
+
+
+if __name__ == '__main__':
+    getGroupelavoieDetails(
+        "https://groupelavoie.com/en/houses-for-sale/bungalow-6515-rue-booker-j4z3s1-brossard-14203465/")
