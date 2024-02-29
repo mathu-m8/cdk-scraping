@@ -1,3 +1,4 @@
+# joellebitar.com
 import json
 import requests
 
@@ -37,10 +38,10 @@ field_mapping = {
 }
 
 
-def lambda_handler(event, response):
+def getJoellebitarDetails(url):
     session = requests.Session()
-    body = json.loads(event["body"])
-    url = body["url"]
+    # body = json.loads(event["body"])
+    # url = body["url"]
 
     headers = {
         'authority': 'joellebitar.com',
@@ -70,11 +71,10 @@ def lambda_handler(event, response):
         if property_details["full_address"]:
             property_details["street_number"] = property_details["full_address"].split(' ')[0]
         mapped_data = {field_mapping.get(key, key): value for key, value in property_details.items()}
-
         return {
             'statusCode': 200,
             'headers': {
                 'Content-Type': 'text/plain'
             },
-            'body': format(mapped_data)
+            'body': json.dumps(mapped_data)
         }

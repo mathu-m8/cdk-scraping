@@ -32,10 +32,10 @@ field_mapping = {
 }
 
 
-def lambda_handler(event, response):
+def getGroupelavoieDetails(url):
     try:
-        body = json.loads(event["body"])
-        url = body["url"]
+        # body = json.loads(event["body"])
+        # url = body["url"]
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
         table = soup.select('table')
@@ -79,7 +79,6 @@ def lambda_handler(event, response):
                 data[key] = value
 
         mapped_data = {field_mapping.get(key, key): value for key, value in data.items()}
-
         return {
             'statusCode': 200,
             'headers': {
